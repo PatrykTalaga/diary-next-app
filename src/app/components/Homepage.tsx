@@ -8,6 +8,7 @@ import StandardLink from "./StandardLink";
 import Task from "./Task";
 import NavBarMain from "./NavBarMain";
 import AddTaskModal from "./AddTaskModal";
+import { useRouter } from "next/navigation";
 
 type Props = {
   dataMemo: DataMemoType;
@@ -36,6 +37,7 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
   const [memosDisp, setMemosDisp] = useState(3);
   const [showModal, setShowModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const router = useRouter();
 
   function loadMore() {
     setMemosDisp(memosDisp + 3);

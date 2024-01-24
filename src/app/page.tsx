@@ -195,8 +195,8 @@ export default async function Home() {
           title: task.title,
           text: task.text,
           createdAt: task.createdAt,
-          completed: task.edited,
-          completedAt: task.editedAt,
+          completed: task.completed,
+          completedAt: task.completedAt,
         };
       });
     }

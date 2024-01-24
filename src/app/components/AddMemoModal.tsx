@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BtnStandard from "./BtnStandard";
 import Modal from "react-modal";
 import addMemo from "../functions/addMemo";
 import addNewImage from "../functions/addNewImage";

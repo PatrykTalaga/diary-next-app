@@ -1,10 +1,13 @@
 "use client";
 
-import AddTaskModal from "./AddTaskModal";
+import completeTask from "../functions/completeTask";
+import deleteTask from "../functions/deleteTask";
 import BtnStandard from "./BtnStandard";
+import { useRouter } from "next/navigation";
 
 type Props = {
   data: {
+    id: string;
     title: string;
     text: string;
     createdAt: Date;
@@ -14,12 +17,16 @@ type Props = {
 };
 
 export default function Task({ data }: Props) {
-  function completeTask() {
-    console.log("completeTask");
+  const router = useRouter();
+
+  async function handleDelete() {
+    deleteTask(data.id);
+    router.refresh();
   }
 
-  function deleteTask() {
-    console.log("deleteTask");
+  async function handleComplete() {
+    completeTask(data.id);
+    router.refresh();
   }
 
   if (data.completed) {
@@ -36,7 +43,7 @@ export default function Task({ data }: Props) {
             {data.text}
           </p>
           <BtnStandard
-            onClick={deleteTask}
+            onClick={handleDelete}
             label="Delete"
             tailwind="mx-auto mt-auto"
           />
@@ -53,7 +60,7 @@ export default function Task({ data }: Props) {
         <header className="text-xl text-white">{data.title}</header>
         <p className="text-sm mb-2">{data.text}</p>
         <BtnStandard
-          onClick={completeTask}
+          onClick={handleComplete}
           label="Complete"
           tailwind="mx-auto mt-auto"
         />
