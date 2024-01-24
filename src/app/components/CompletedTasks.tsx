@@ -28,8 +28,8 @@ export default function CompletedTasks({ data }: Props) {
     endYear: "",
     endMonth: "",
   });
-  const [dataTask, setDataTask] = useState([]);
-  useEffect(() => setDataTask(data), []);
+  const [dataTask, setDataTask] = useState(data);
+  //useEffect(() => setDataTask(data), []);
 
   function hideBtn() {
     setIsHiddenSearch({
@@ -42,8 +42,7 @@ export default function CompletedTasks({ data }: Props) {
     console.log("aa");
   }
 
-  function searchByTitle(e) {
-    e.preventDefault();
+  function searchByTitle() {
     setDataTask(
       dataTask.toSorted(function (a, b) {
         const nameA = a.title.toUpperCase(); // ignore upper and lowercase
@@ -60,8 +59,7 @@ export default function CompletedTasks({ data }: Props) {
       })
     );
   }
-  function searchByTags(e) {
-    e.preventDefault();
+  function searchByTags() {
     setDataTask(
       dataTask.toSorted(function (a, b) {
         return b.completedAt.getTime() - a.completedAt.getTime();
@@ -184,12 +182,18 @@ export default function CompletedTasks({ data }: Props) {
             onChange={(e) => setSearchParams(e.target.value)}
             className="bg-neutral-100 border border-black w-1/2 sm:w-1/5"
           ></input>
-          <BtnStandard
+          <p className="border-2 border-black p-5" onClick={searchByTitle}>
+            Title
+          </p>
+          <p className="border-2 border-black p-5" onClick={searchByTags}>
+            Tags
+          </p>
+          {/*  <BtnStandard
             label="Title"
             tailwind="text-xl"
             onClick={searchByTitle}
           />
-          <BtnStandard label="Tags" tailwind="text-xl" onClick={searchByTags} />
+          <BtnStandard label="Tags" tailwind="text-xl" onClick={searchByTags} /> */}
           <BtnStandard label="Text" tailwind="text-xl" onClick={searchByText} />
         </form>
       </section>
