@@ -7,18 +7,10 @@ import Memo from "./Memo";
 import StandardLink from "./StandardLink";
 import Task from "./Task";
 import NavBarMain from "./NavBarMain";
+import fetchMemos from "../functions/fetchMemos";
 
 type Props = {
-  dataMemo: Array<{
-    id: string;
-    title: string;
-    text: string;
-    img: string;
-    tags: Array<string>;
-    createdAt: Date;
-    edited: boolean;
-    editedAt: Date;
-  }>;
+  dataMemo: DataMemoType;
   dataTask: Array<{
     id: string;
     title: string;
@@ -28,6 +20,17 @@ type Props = {
     completeddAt: Date;
   }>;
 };
+
+type DataMemoType = Array<{
+  id: string;
+  title: string;
+  text: string;
+  img: string;
+  tags: Array<string>;
+  createdAt: Date;
+  edited: boolean;
+  editedAt: Date;
+}>;
 
 export default function Homepage({ dataMemo, dataTask }: Props) {
   const [memosDisp, setMemosDisp] = useState(3);
@@ -40,6 +43,8 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
   function clearTasks() {
     console.log(clearTasks);
   }
+
+  //loadMoreMemos();
 
   return (
     <>

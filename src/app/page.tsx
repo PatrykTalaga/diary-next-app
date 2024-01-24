@@ -1,8 +1,9 @@
 import Memo from "../../models/memoModel";
 import connectMongo from "../../utils/connectMongo";
 import Homepage from "./components/Homepage";
+import fetchMemos from "./functions/fetchMemos";
 
-const dataMemo = [
+/* const dataMemo = [
   {
     id: "12333232234213",
     title: "Title",
@@ -99,7 +100,7 @@ const dataMemo = [
     edited: false,
     editedAt: new Date(),
   },
-];
+]; */
 
 const dataTask = [
   {
@@ -138,17 +139,41 @@ const dataTask = [
     completeddAt: new Date(),
   },
 ];
+type DataMemoType = Array<{
+  id: string;
+  title: string;
+  text: string;
+  img: string;
+  tags: Array<string>;
+  createdAt: Date;
+  edited: boolean;
+  editedAt: Date;
+}>;
 
 export default async function Home() {
-  /* try {
-    await connectMongo();
-    let memoArr = await Memo.find();
-    memoArr.sort(function (a, b) {
-      return b.editedAt.getTime() - a.editedAt.getTime();
-    });
+  let dataMemo: DataMemoType = [];
+  let noMemos = true;
+  try {
+    const memos = await fetchMemos(100);
+
+    if (memos !== false) {
+      dataMemo = memos.map((memo) => {
+        return {
+          id: memo._id.toString(),
+          title: memo.title,
+          text: memo.text,
+          img: memo.img,
+          tags: memo.tags,
+          createdAt: memo.createdAt,
+          edited: memo.edited,
+          editedAt: memo.editedAt,
+        };
+      });
+      noMemos = false;
+    }
   } catch (err) {
     console.error(err);
-  } */
+  }
 
   return (
     <>
