@@ -10,6 +10,7 @@ const memoSchema = new Schema({
     required: true,
   },
   img: String,
+  tags: Array,
   edited: Boolean,
   createdAt: Date,
   editedAt: Date,

@@ -7,7 +7,7 @@ import Memo from "./Memo";
 import StandardLink from "./StandardLink";
 import Task from "./Task";
 import NavBarMain from "./NavBarMain";
-import fetchMemos from "../functions/fetchMemos";
+import AddTaskModal from "./AddTaskModal";
 
 type Props = {
   dataMemo: DataMemoType;
@@ -17,7 +17,7 @@ type Props = {
     text: string;
     createdAt: Date;
     completed: boolean;
-    completeddAt: Date;
+    completedAt: Date;
   }>;
 };
 
@@ -35,6 +35,7 @@ type DataMemoType = Array<{
 export default function Homepage({ dataMemo, dataTask }: Props) {
   const [memosDisp, setMemosDisp] = useState(3);
   const [showModal, setShowModal] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   function loadMore() {
     setMemosDisp(memosDisp + 3);
@@ -56,6 +57,11 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
         <AddMemoModal
           showModal={showModal}
           closeForm={() => setShowModal(false)}
+        />
+
+        <AddTaskModal
+          showModal={showTaskModal}
+          closeForm={() => setShowTaskModal(false)}
         />
 
         <BtnStandard
@@ -86,6 +92,10 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
             <header className="text-2xl text-neutral-100 mr-2">Tasks</header>
             <BtnStandard onClick={clearTasks} label="Clear Completed" />
             <StandardLink link="/completedTasks" label="View Completed Tasks" />
+            <BtnStandard
+              onClick={() => setShowTaskModal(true)}
+              label="Add New Task"
+            />
           </div>
           <ul
             className="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4 sm:gap-5

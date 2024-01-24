@@ -1,15 +1,11 @@
 "use server";
 
 import connectMongo from "../../../utils/connectMongo";
-import Memo from "../../../models/memoModel";
+import Task from "../../../models/taskModel";
 /* import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options"; */
 
-export default async function addMemo(
-  title: string,
-  text: string,
-  tags: string
-) {
+export default async function addTask(title: string, text: string) {
   /* const session = await getServerSession(options);
   if (!session) {
     redirect("/api/auth/signin?callbackUrl=/");
@@ -20,22 +16,16 @@ export default async function addMemo(
   try {
     await connectMongo();
     if (title == "" || text == "") return false;
-
-    let tagsArr: Array<string> = [];
-    if (tags !== "") tagsArr = tags.split(" ");
-
-    const newMemo = {
+    const newTask = {
       title: title,
       text: text,
-      img: "",
-      tags: tagsArr,
-      edited: false,
+      completed: false,
       createdAt: date,
-      editedAt: date,
+      completedAt: date,
     };
 
-    const savedMemo: { _id: string } = await Memo.create(newMemo);
-    return savedMemo._id.toString(); //it is object id
+    await Task.create(newTask);
+    return true;
   } catch (error) {
     console.error(error);
     return false;

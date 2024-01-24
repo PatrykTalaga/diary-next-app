@@ -61,7 +61,7 @@ export default function Memo({ data }: Props) {
       </section>
 
       <section className="flex flex-col gap-2 py-1 text-sm">
-        <p>Tags: {data.tags}</p>
+        <p>Tags: {data.tags.map((tag) => tag + " ")}</p>
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">

@@ -6,7 +6,6 @@ import connectMongo from "../../../utils/connectMongo";
 import Memo from "../../../models/memoModel";
 /* import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options"; */
-//import { redirect } from "next/navigation";
 
 export default async function addNewImage(data: FormData, id: string) {
   /*   const session = await getServerSession(options);

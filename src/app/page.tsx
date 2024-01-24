@@ -2,6 +2,7 @@ import Memo from "../../models/memoModel";
 import connectMongo from "../../utils/connectMongo";
 import Homepage from "./components/Homepage";
 import fetchMemos from "./functions/fetchMemos";
+import fetchTasks from "./functions/fetchTasks";
 
 /* const dataMemo = [
   {
@@ -102,7 +103,7 @@ import fetchMemos from "./functions/fetchMemos";
   },
 ]; */
 
-const dataTask = [
+/* const dataTask = [
   {
     id: "123345213",
     title: "Title 1",
@@ -139,6 +140,8 @@ const dataTask = [
     completeddAt: new Date(),
   },
 ];
+ */
+
 type DataMemoType = Array<{
   id: string;
   title: string;
@@ -149,14 +152,21 @@ type DataMemoType = Array<{
   edited: boolean;
   editedAt: Date;
 }>;
+type DataTaskType = Array<{
+  id: string;
+  title: string;
+  text: string;
+  createdAt: Date;
+  completed: boolean;
+  completedAt: Date;
+}>;
 
 export default async function Home() {
   let dataMemo: DataMemoType = [];
-  let noMemos = true;
   try {
     const memos = await fetchMemos(100);
-
     if (memos !== false) {
+      //const {_id, ...dataMemo} = memos causes problems
       dataMemo = memos.map((memo) => {
         return {
           id: memo._id.toString(),
@@ -169,7 +179,26 @@ export default async function Home() {
           editedAt: memo.editedAt,
         };
       });
-      noMemos = false;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  let dataTask: DataTaskType = [];
+  try {
+    const tasks = await fetchTasks(8);
+    if (tasks !== false) {
+      //const {_id, ...dataTask} = tasks causes problems
+      dataTask = tasks.map((task) => {
+        return {
+          id: task._id.toString(),
+          title: task.title,
+          text: task.text,
+          createdAt: task.createdAt,
+          completed: task.edited,
+          completedAt: task.editedAt,
+        };
+      });
     }
   } catch (err) {
     console.error(err);
