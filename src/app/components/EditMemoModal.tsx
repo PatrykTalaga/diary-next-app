@@ -24,6 +24,7 @@ export default function EditMemoModal({ showModal, closeForm }: Props) {
   return (
     <>
       <Modal
+        ariaHideApp={false}
         isOpen={showModal}
         className="bg-stone-400 p-5 pt-2 w-5/6 border-2 border-black
           fixed z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
