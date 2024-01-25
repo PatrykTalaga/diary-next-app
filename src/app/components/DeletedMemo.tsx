@@ -3,13 +3,9 @@ import { useState } from "react";
 import convertDate from "../functions/convertDate";
 import BtnStandard from "./BtnStandard";
 import EditMemoModal from "./EditMemoModal";
-import deleteMemo from "../functions/deleteMemo";
-import { useRouter } from "next/navigation";
-import StandardLink from "./StandardLink";
 
 type Props = {
   data: {
-    id: string;
     title: string;
     text: string;
     img: string;
@@ -20,39 +16,36 @@ type Props = {
   };
 };
 
-export default function Memo({ data }: Props) {
+export default function DeletedMemo({ data }: Props) {
   const [showModal, setShowModal] = useState(false);
-  const router = useRouter();
-
+  function viewPreviousVersions() {
+    console.log("viewPreviousVersions");
+  }
   function printMemo() {
     console.log("print");
-  }
-
-  async function handleDelete() {
-    await deleteMemo(data.id);
-    router.refresh();
   }
 
   return (
     <div
       className="flex flex-col justify-center items-start px-5 mx-5 py-2
-    border rounded-lg bg-stone-400 bg-opacity-70 h-full"
+    border rounded-lg bg-stone-400 bg-opacity-70"
     >
       <EditMemoModal
         showModal={showModal}
         closeForm={() => setShowModal(false)}
-        data={data}
       />
       <section className=" flex justify-start items-end">
-        <header className="text-xl font-bold">{data.title + ", "}</header>
-        <p className=" text-lg  ml-2">
+        <header className="text-xl text-neutral-100">
+          {data.title + ", "}
+        </header>
+        <p className=" text-lg text-neutral-100 ml-2">
           {data.edited
             ? convertDate(data.editedAt)
             : convertDate(data.createdAt)}
         </p>
       </section>
 
-      <section className="container">
+      <section>
         {data.img !== "" && (
           <img
             alt="memo image"
@@ -68,15 +61,13 @@ export default function Memo({ data }: Props) {
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">
-        {/*  {data.edited ? (
-          <StandardLink
-            link={`previousVersions/${data.id}`}
+        {data.edited ? (
+          <BtnStandard
+            onClick={viewPreviousVersions}
             label="View previous versions"
-          ></StandardLink>
-        ) : null} */}
+          />
+        ) : null}
         <BtnStandard onClick={printMemo} label="Print" />
-        <BtnStandard onClick={() => setShowModal(true)} label="Edit" />
-        <BtnStandard onClick={handleDelete} label="Delete" />
       </section>
     </div>
   );

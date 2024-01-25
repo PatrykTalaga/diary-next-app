@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-const deletedMemoSchema = new Schema({
+const removedMemoSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -12,9 +12,10 @@ const deletedMemoSchema = new Schema({
   edited: Boolean,
   createdAt: Date,
   editedAt: Date,
+  deletedAt: Date,
 });
 
-const DeletedMemo =
-  models.DeletedMemo || model("DeletedMemo", deletedMemoSchema);
+const RemovedMemo =
+  models.RemovedMemo || model("RemovedMemo", removedMemoSchema);
 
-export default DeletedMemo;
+export default RemovedMemo;

@@ -3,25 +3,27 @@
 import { useState } from "react";
 import NavBarAlt from "./NavBarAlt";
 import BtnStandard from "./BtnStandard";
-import TaskCompleted from "./TaskCompleted";
 import BtnSubmit from "./BtnSubmit";
+import Memo from "./Memo";
 
 type Props = {
   data: Array<{
     id: string;
     title: string;
     text: string;
+    img: string;
+    tags: Array<string>;
     createdAt: Date;
-    completed: boolean;
-    completedAt: Date;
+    edited: boolean;
+    editedAt: Date;
   }>;
 };
 
-export default function CompletedTasks({ data }: Props) {
+export default function AdvancedSearchPage({ data }: Props) {
   const [searchParams, setSearchParams] = useState("");
   const [titleStatus, setTitleStatus] = useState(true);
   const [createdAtStatus, setCreatedAtStatus] = useState(true);
-  const [completedAtStatus, setCompletedAtStatus] = useState(true);
+  const [editedAtStatus, setEditedAtStatus] = useState(true);
   const [isHiddenSearch, setIsHiddenSearch] = useState({
     lable: "Show",
     value: false,
@@ -48,6 +50,21 @@ export default function CompletedTasks({ data }: Props) {
     event.preventDefault();
     const regEx = new RegExp(searchParams, "i");
     setDataTask(data.filter((data) => data.text.match(regEx)));
+  };
+
+  const searchByTags = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const regEx = new RegExp(searchParams, "i");
+
+    setDataTask(
+      data.filter((data) => {
+        const newArr = data.tags.filter((tag) => tag.match(regEx));
+        if (newArr.length !== 0) {
+          return data;
+        }
+      })
+    );
+    console.log(dataTask);
   };
 
   const searchByTimePeriod = (event: React.MouseEvent) => {
@@ -98,25 +115,25 @@ export default function CompletedTasks({ data }: Props) {
 
   const sortByCompleted = (event: React.MouseEvent) => {
     event.preventDefault();
-    if (completedAtStatus) {
+    if (editedAtStatus) {
       setDataTask(
         data.toSorted(function (a, b) {
-          if (a.completedAt.getTime() < b.completedAt.getTime()) return -1;
-          if (a.completedAt.getTime() > b.completedAt.getTime()) return 1;
+          if (a.editedAt.getTime() < b.editedAt.getTime()) return -1;
+          if (a.editedAt.getTime() > b.editedAt.getTime()) return 1;
           return 0;
         })
       );
-      setCompletedAtStatus(!completedAtStatus);
+      setEditedAtStatus(!editedAtStatus);
       return;
     }
     setDataTask(
       data.toSorted(function (a, b) {
-        if (a.completedAt.getTime() > b.completedAt.getTime()) return -1;
-        if (a.completedAt.getTime() < b.completedAt.getTime()) return 1;
+        if (a.editedAt.getTime() > b.editedAt.getTime()) return -1;
+        if (a.editedAt.getTime() < b.editedAt.getTime()) return 1;
         return 0;
       })
     );
-    setCompletedAtStatus(!completedAtStatus);
+    setEditedAtStatus(!editedAtStatus);
   };
 
   const sortByCreated = (event: React.MouseEvent) => {
@@ -181,6 +198,7 @@ export default function CompletedTasks({ data }: Props) {
               onClick={searchByTitle}
             />
             <BtnSubmit label="Text" tailwind="text-xl" onClick={searchByText} />
+            <BtnSubmit label="Tags" tailwind="text-xl" onClick={searchByTags} />
           </form>
         </section>
 
@@ -258,14 +276,14 @@ export default function CompletedTasks({ data }: Props) {
                 onClick={sortByTitle}
               />
               <BtnSubmit
-                label="Date Completed"
-                tailwind="text-xl"
-                onClick={sortByCompleted}
-              />
-              <BtnSubmit
                 label="Date Created"
                 tailwind="text-xl"
                 onClick={sortByCreated}
+              />
+              <BtnSubmit
+                label="Date Edited"
+                tailwind="text-xl"
+                onClick={sortByCompleted}
               />
             </div>
           )}
@@ -278,7 +296,7 @@ export default function CompletedTasks({ data }: Props) {
         >
           {dataTask.map((data) => (
             <li key={data.id}>
-              <TaskCompleted data={data} />
+              <Memo data={data} />
             </li>
           ))}
         </ul>

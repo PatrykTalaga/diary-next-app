@@ -57,7 +57,7 @@ export default function Task({ data }: Props) {
         className="flex flex-col justify-start items-center p-2 border
     rounded-lg bg-stone-300 bg-opacity-70 h-full"
       >
-        <header className="text-xl text-white">{data.title}</header>
+        <header className="text-xl font-bold">{data.title}</header>
         <p className="text-sm mb-2">{data.text}</p>
         <BtnStandard
           onClick={handleComplete}

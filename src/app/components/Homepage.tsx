@@ -53,7 +53,7 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
     <>
       <div
         className="w-full min-h-screen bg-stone-500 flex flex-col
-        justify-between"
+        justify-start"
       >
         <NavBarMain />
         <AddMemoModal
@@ -86,14 +86,14 @@ export default function Homepage({ dataMemo, dataTask }: Props) {
         <BtnStandard
           onClick={loadMore}
           label="Load More"
-          tailwind="mx-auto my-2 text-xl"
+          tailwind="mx-auto my-2 sm:my-4 text-xl"
         />
 
-        <section className="bg-stone-400 bg-opacity-70 border-t">
-          <div className="flex items-center gap-2 p-2">
-            <header className="text-2xl text-neutral-100 mr-2">Tasks</header>
+        <section className="bg-stone-400 bg-opacity-70 border-t mt-auto">
+          <div className="flex items-start justify-centers gap-2 p-2">
+            <header className="text-2xl font-sans mr-2">Tasks</header>
             <BtnStandard onClick={clearTasks} label="Clear Completed" />
-            <StandardLink link="/completedTasks" label="View Completed Tasks" />
+            <StandardLink link="/completedTasks" label="All Completed Tasks" />
             <BtnStandard
               onClick={() => setShowTaskModal(true)}
               label="Add New Task"

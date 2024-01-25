@@ -14,3 +14,17 @@ export default async function fetchMemos(limit: number) {
     return false;
   }
 }
+
+export async function fetchAllMemos() {
+  try {
+    await connectMongo();
+    let memos = await Memo.find();
+    memos.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+    return memos;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}

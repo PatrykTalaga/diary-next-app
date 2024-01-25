@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-const previousMemoSchema = new Schema({
+const editedMemoModelSchema = new Schema({
   commonId: String,
   title: {
     type: String,
@@ -10,12 +10,14 @@ const previousMemoSchema = new Schema({
     type: String,
     required: true,
   },
+  img: String,
+  tags: Array,
   edited: Boolean,
   createdAt: Date,
   editedAt: Date,
 });
 
-const PreviousMemo =
-  models.PreviousMemo || model("PreviousMemo", previousMemoSchema);
+const EditedMemoModel =
+  models.EditedMemoModel || model("EditedMemoModel", editedMemoModelSchema);
 
-export default PreviousMemo;
+export default EditedMemoModel;

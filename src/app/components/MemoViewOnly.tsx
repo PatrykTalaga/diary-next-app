@@ -1,11 +1,7 @@
 "use client";
-import { useState } from "react";
+
 import convertDate from "../functions/convertDate";
 import BtnStandard from "./BtnStandard";
-import EditMemoModal from "./EditMemoModal";
-import deleteMemo from "../functions/deleteMemo";
-import { useRouter } from "next/navigation";
-import StandardLink from "./StandardLink";
 
 type Props = {
   data: {
@@ -20,17 +16,9 @@ type Props = {
   };
 };
 
-export default function Memo({ data }: Props) {
-  const [showModal, setShowModal] = useState(false);
-  const router = useRouter();
-
+export default function MemoViewOnly({ data }: Props) {
   function printMemo() {
     console.log("print");
-  }
-
-  async function handleDelete() {
-    await deleteMemo(data.id);
-    router.refresh();
   }
 
   return (
@@ -38,14 +26,11 @@ export default function Memo({ data }: Props) {
       className="flex flex-col justify-center items-start px-5 mx-5 py-2
     border rounded-lg bg-stone-400 bg-opacity-70 h-full"
     >
-      <EditMemoModal
-        showModal={showModal}
-        closeForm={() => setShowModal(false)}
-        data={data}
-      />
       <section className=" flex justify-start items-end">
-        <header className="text-xl font-bold">{data.title + ", "}</header>
-        <p className=" text-lg  ml-2">
+        <header className="text-xl text-neutral-100">
+          {data.title + ", "}
+        </header>
+        <p className=" text-lg text-neutral-100 ml-2">
           {data.edited
             ? convertDate(data.editedAt)
             : convertDate(data.createdAt)}
@@ -68,15 +53,7 @@ export default function Memo({ data }: Props) {
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">
-        {/*  {data.edited ? (
-          <StandardLink
-            link={`previousVersions/${data.id}`}
-            label="View previous versions"
-          ></StandardLink>
-        ) : null} */}
         <BtnStandard onClick={printMemo} label="Print" />
-        <BtnStandard onClick={() => setShowModal(true)} label="Edit" />
-        <BtnStandard onClick={handleDelete} label="Delete" />
       </section>
     </div>
   );

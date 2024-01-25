@@ -1,13 +1,21 @@
 "use server";
 
 import Memo from "../../../models/memoModel";
+import EditedMemoModel from "../../../models/editedMemoModel";
 import connectMongo from "../../../utils/connectMongo";
 import RemovedMemo from "../../../models/removedMemoModel";
+import PreviousVersions from "../previousVersions/page";
 
 /* import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options"; */
 
-export default async function deleteMemo(id: string) {
+export default async function editMemoServer(
+  id: string,
+  title: string,
+  text: string,
+  tags: string,
+  img: string
+) {
   /* const session = await getServerSession(options);
   if (!session) {
     redirect("/api/auth/signin?callbackUrl=/");
@@ -20,7 +28,13 @@ export default async function deleteMemo(id: string) {
     const memo = await Memo.findOne({ _id: id });
     if (memo === null) return;
 
-    const newMemo = {
+    if (title == "" || text == "") return false;
+
+    let tagsArr: Array<string> = [];
+    if (tags !== "") tagsArr = tags.split(" ");
+
+    const previousVerion = {
+      commonId: id,
       title: memo.title,
       text: memo.text,
       img: memo.img,
@@ -31,10 +45,15 @@ export default async function deleteMemo(id: string) {
       deletedAt: date,
     };
 
-    const result = await Memo.deleteOne({ _id: id });
-    if (result.acknowledged !== true) return false;
+    memo.title = title;
+    memo.text = text;
+    memo.img = img;
+    memo.tags = tags;
+    memo.edited = true;
+    memo.editedAt = date;
 
-    await RemovedMemo.create(newMemo);
+    await memo.save();
+    await EditedMemoModel.create(previousVerion);
   } catch (error) {
     console.error(error);
     return false;
