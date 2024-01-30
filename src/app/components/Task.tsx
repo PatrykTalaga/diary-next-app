@@ -1,7 +1,6 @@
 "use client";
 
-import completeTask from "../functions/completeTask";
-import deleteTask from "../functions/deleteTask";
+import { completeTask, deleteTask } from "../functions/tasks";
 import BtnStandard from "./BtnStandard";
 import { useRouter } from "next/navigation";
 

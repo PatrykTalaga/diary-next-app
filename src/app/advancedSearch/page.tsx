@@ -1,7 +1,7 @@
 import AdvancedSearchPage from "../components/AdvancedSearchPage";
 import CompletedTasks from "../components/CompletedTasks";
 import fetchCompletedTasks from "../functions/fetchCompletedTasks";
-import { fetchAllMemos } from "../functions/fetchMemos";
+import { fetchAllMemos } from "../functions/memos";
 
 type DataMemoType = Array<{
   id: string;

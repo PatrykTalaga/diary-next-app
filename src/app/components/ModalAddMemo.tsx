@@ -2,16 +2,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
-import addMemo from "../functions/addMemo";
-import addNewImage from "../functions/addNewImage";
 import BtnSubmit from "./BtnSubmit";
+import { addMemo, addNewImage } from "../functions/memos";
 
 type Props = {
   showModal: boolean;
   closeForm: () => void;
 };
 
-export default function AddMemoModal({ showModal, closeForm }: Props) {
+export default function ModalAddMemo({ showModal, closeForm }: Props) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [tags, setTags] = useState("");

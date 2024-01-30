@@ -2,10 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
-import addMemo from "../functions/addMemo";
-import addNewImage from "../functions/addNewImage";
 import BtnSubmit from "./BtnSubmit";
-import editMemoServer from "../functions/editMemoServer";
+import { addNewImage, editMemo } from "../functions/memos";
 
 type Props = {
   showModal: boolean;
@@ -22,14 +20,14 @@ type Props = {
   };
 };
 
-export default function Edit({ showModal, closeForm, data }: Props) {
+export default function ModalEditMemo({ showModal, closeForm, data }: Props) {
   const [title, setTitle] = useState(data.title);
   const [text, setText] = useState(data.text);
   const [tags, setTags] = useState(data.tags.toString());
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  async function editMemo(formData: FormData) {
+  async function handleSubmit(formData: FormData) {
     setErrorMessage("");
 
     if (title == "" || text == "") {
@@ -37,10 +35,12 @@ export default function Edit({ showModal, closeForm, data }: Props) {
       return;
     }
     const file: File | null = formData.get("img") as unknown as File;
+
+    //There is no image
     if (file.size == 0) {
       try {
         const img = "";
-        const result = await editMemoServer(data.id, title, text, tags, img);
+        const result = await editMemo(data.id, title, text, tags, img);
         if (result == false) {
           setErrorMessage("Server error, memo wasn't saved");
           return;
@@ -50,6 +50,7 @@ export default function Edit({ showModal, closeForm, data }: Props) {
       }
     }
 
+    //Image was uploaded
     if (file.size !== 0) {
       try {
         //check file size and format
@@ -67,7 +68,7 @@ export default function Edit({ showModal, closeForm, data }: Props) {
 
         //save text first
         const img = "";
-        const result = await editMemoServer(data.id, title, text, tags, img);
+        const result = await editMemo(data.id, title, text, tags, img);
         if (result == false) {
           setErrorMessage("Server error, memo wasn't saved");
           return;
@@ -110,8 +111,9 @@ export default function Edit({ showModal, closeForm, data }: Props) {
         <p className="text-xl font-bold text-center my-1">
           Image will be deleted if nothing is uploaded
         </p>
+
         <form
-          action={editMemo}
+          action={handleSubmit}
           className="w-full grid grid-cols-[60px_auto] sm:grid-cols-[95px_auto]
           items-center"
         >

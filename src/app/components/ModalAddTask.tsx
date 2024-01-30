@@ -3,14 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BtnStandard from "./BtnStandard";
 import Modal from "react-modal";
-import addTask from "../functions/addTask";
+import { addTask } from "../functions/tasks";
 
 type Props = {
   showModal: boolean;
   closeForm: () => void;
 };
 
-export default function AddTaskModal({ showModal, closeForm }: Props) {
+export default function ModalAddTask({ showModal, closeForm }: Props) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

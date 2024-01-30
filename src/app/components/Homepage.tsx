@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import AddMemoModal from "./AddMemoModal";
+import AddMemoModal from "./ModalAddMemo";
 import BtnStandard from "./BtnStandard";
 import Memo from "./Memo";
 import StandardLink from "./StandardLink";
 import Task from "./Task";
 import NavBarMain from "./NavBarMain";
-import AddTaskModal from "./AddTaskModal";
+import AddTaskModal from "./ModalAddTask";
 import { useRouter } from "next/navigation";
 
 type Props = {

@@ -2,10 +2,9 @@
 import { useState } from "react";
 import convertDate from "../functions/convertDate";
 import BtnStandard from "./BtnStandard";
-import EditMemoModal from "./EditMemoModal";
-import deleteMemo from "../functions/deleteMemo";
 import { useRouter } from "next/navigation";
-import StandardLink from "./StandardLink";
+import { deleteMemo } from "../functions/memos";
+import ModalEditMemo from "./ModalEditMemo";
 
 type Props = {
   data: {
@@ -38,7 +37,7 @@ export default function Memo({ data }: Props) {
       className="flex flex-col justify-center items-start px-5 mx-5 py-2
     border rounded-lg bg-stone-400 bg-opacity-70 h-full"
     >
-      <EditMemoModal
+      <ModalEditMemo
         showModal={showModal}
         closeForm={() => setShowModal(false)}
         data={data}
@@ -68,12 +67,7 @@ export default function Memo({ data }: Props) {
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">
-        {/*  {data.edited ? (
-          <StandardLink
-            link={`previousVersions/${data.id}`}
-            label="View previous versions"
-          ></StandardLink>
-        ) : null} */}
+        {/*  add previous versions button/link here */}
         <BtnStandard onClick={printMemo} label="Print" />
         <BtnStandard onClick={() => setShowModal(true)} label="Edit" />
         <BtnStandard onClick={handleDelete} label="Delete" />

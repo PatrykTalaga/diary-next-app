@@ -2,7 +2,7 @@
 import { useState } from "react";
 import convertDate from "../functions/convertDate";
 import BtnStandard from "./BtnStandard";
-import EditMemoModal from "./EditMemoModal";
+import EditMemoModal from "./ModalEditMemo";
 
 type Props = {
   data: {
