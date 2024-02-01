@@ -43,6 +43,32 @@ export default async function fetchTasks(limit: number) {
   }
 }
 
+export async function fetchAllTasks() {
+  try {
+    await connectMongo();
+    let tasks = await Task.find();
+    //remove object id (_id), add id string
+    const dataTask: DataTaskType = tasks.map((task) => {
+      return {
+        id: task._id.toString(),
+        title: task.title,
+        text: task.text,
+        createdAt: task.createdAt,
+        completed: task.completed,
+        completedAt: task.completedAt,
+      };
+    });
+    //sort by creaction date
+    dataTask.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+    return dataTask;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
 export async function fetchCompletedTasks() {
   try {
     await connectMongo();

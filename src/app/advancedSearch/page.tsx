@@ -1,7 +1,8 @@
-import AdvancedSearchPage from "../components/AdvancedSearchPage";
-import CompletedTasks from "../components/CompletedTasks";
-import fetchCompletedTasks from "../functions/fetchCompletedTasks";
+"use server";
+
+import NavBarAlt from "../components/NavBarAlt";
 import { fetchAllMemos } from "../functions/memos";
+import SearchMemos from "../components/SearchMemos";
 
 type DataMemoType = Array<{
   id: string;
@@ -18,28 +19,20 @@ export default async function AllCompletedTasks() {
   let dataMemo: DataMemoType = [];
   try {
     const memos = await fetchAllMemos();
-    if (memos !== false) {
-      //const {_id, ...dataMemo} = memos causes problems
-      dataMemo = memos.map((memo) => {
-        return {
-          id: memo._id.toString(),
-          title: memo.title,
-          text: memo.text,
-          img: memo.img,
-          tags: memo.tags,
-          createdAt: memo.createdAt,
-          edited: memo.edited,
-          editedAt: memo.editedAt,
-        };
-      });
-    }
+    if (memos !== false) dataMemo = memos;
   } catch (err) {
     console.error(err);
   }
 
   return (
     <>
-      <AdvancedSearchPage data={dataMemo}></AdvancedSearchPage>
+      <div
+        className="w-full min-h-screen bg-stone-500 flex flex-col
+      justify-start"
+      >
+        <NavBarAlt />
+        <SearchMemos data={dataMemo} />
+      </div>
     </>
   );
 }

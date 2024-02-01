@@ -1,5 +1,11 @@
-import CompletedTasks from "../components/CompletedTasks";
-import { fetchCompletedTasks } from "../functions/tasks";
+"use server";
+
+import NavBarAlt from "../components/NavBarAlt";
+import SearchCompletedTasks from "../components/SearchCompletedTasks";
+import fetchTasks, {
+  fetchAllTasks,
+  fetchCompletedTasks,
+} from "../functions/tasks";
 
 type DataTaskType = Array<{
   id: string;
@@ -13,27 +19,31 @@ type DataTaskType = Array<{
 export default async function AllCompletedTasks() {
   let dataTask: DataTaskType = [];
   try {
+    //completed and deleted tasks
     const tasks = await fetchCompletedTasks();
-    if (tasks !== false) {
-      //const {_id, ...dataTask} = tasks causes problems
-      dataTask = tasks.map((task) => {
-        return {
-          id: task._id.toString(),
-          title: task.title,
-          text: task.text,
-          createdAt: task.createdAt,
-          completed: task.completed,
-          completedAt: task.completedAt,
-        };
-      });
-    }
+    if (tasks !== false) dataTask = tasks;
+    //completed and not deleted tasks
+    let notDeletedYet = await fetchAllTasks();
+    if (notDeletedYet == false) return;
+    notDeletedYet = notDeletedYet.filter((task) => task.completed == true);
+    //combine both and sort them
+    dataTask = [...notDeletedYet, ...dataTask];
+    dataTask.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
   } catch (err) {
     console.error(err);
   }
 
   return (
     <>
-      <CompletedTasks data={dataTask}></CompletedTasks>
+      <div
+        className="w-full min-h-screen bg-stone-500 flex flex-col
+      justify-start"
+      >
+        <NavBarAlt />
+        <SearchCompletedTasks data={dataTask} />
+      </div>
     </>
   );
 }

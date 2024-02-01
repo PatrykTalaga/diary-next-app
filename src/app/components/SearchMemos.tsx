@@ -1,27 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import NavBarAlt from "./NavBarAlt";
 import BtnStandard from "./BtnStandard";
-import TaskCompleted from "./TaskCompleted";
 import BtnSubmit from "./BtnSubmit";
+import Memo from "./Memo";
 
 type Props = {
   data: Array<{
     id: string;
     title: string;
     text: string;
+    img: string;
+    tags: Array<string>;
     createdAt: Date;
-    completed: boolean;
-    completedAt: Date;
+    edited: boolean;
+    editedAt: Date;
   }>;
 };
 
-export default function CompletedTasks({ data }: Props) {
+export default function SearchMemos({ data }: Props) {
+  //main search input
   const [searchParams, setSearchParams] = useState("");
+  //variables for sorting by
   const [titleStatus, setTitleStatus] = useState(true);
   const [createdAtStatus, setCreatedAtStatus] = useState(true);
-  const [completedAtStatus, setCompletedAtStatus] = useState(true);
+  const [editedAtStatus, setEditedAtStatus] = useState(true);
+  //hide components
   const [isHiddenSearch, setIsHiddenSearch] = useState({
     lable: "Show",
     value: false,
@@ -30,35 +34,52 @@ export default function CompletedTasks({ data }: Props) {
     lable: "Show",
     value: false,
   });
+  //search by time period input
   const [timePeriod, settimePeriod] = useState({
     year: 0,
     month: 0,
   });
-  const [dataTask, setDataTask] = useState(data);
+  //data to display
+  const [dataMemo, setDataMemo] = useState(data);
 
-  //***Sort And Search Functions***//
+  //***Sort And Search Functions**********************************************//
   //Search
   const searchByTitle = (event: React.MouseEvent) => {
     event.preventDefault();
     const regEx = new RegExp(searchParams, "i");
-    setDataTask(data.filter((data) => data.title.match(regEx)));
+    setDataMemo(data.filter((data) => data.title.match(regEx)));
   };
 
   const searchByText = (event: React.MouseEvent) => {
     event.preventDefault();
     const regEx = new RegExp(searchParams, "i");
-    setDataTask(data.filter((data) => data.text.match(regEx)));
+    setDataMemo(data.filter((data) => data.text.match(regEx)));
+  };
+
+  const searchByTags = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const regEx = new RegExp(searchParams, "i");
+
+    setDataMemo(
+      data.filter((data) => {
+        const newArr = data.tags.filter((tag) => tag.match(regEx));
+        if (newArr.length !== 0) {
+          return data;
+        }
+      })
+    );
+    console.log(dataMemo);
   };
 
   const searchByTimePeriod = (event: React.MouseEvent) => {
     event.preventDefault();
     if (timePeriod.month == 0) {
-      setDataTask(
+      setDataMemo(
         data.filter((data) => data.createdAt.getFullYear() == timePeriod.year)
       );
       return;
     }
-    setDataTask(
+    setDataMemo(
       data.filter((data) => {
         return (
           data.createdAt.getFullYear() == timePeriod.year &&
@@ -72,8 +93,8 @@ export default function CompletedTasks({ data }: Props) {
   const sortByTitle = (event: React.MouseEvent) => {
     event.preventDefault();
     if (titleStatus) {
-      setDataTask(
-        data.toSorted(function (a, b) {
+      setDataMemo(
+        dataMemo.toSorted(function (a, b) {
           const nameA = a.title.toUpperCase();
           const nameB = b.title.toUpperCase();
           if (nameA < nameB) return -1;
@@ -84,8 +105,8 @@ export default function CompletedTasks({ data }: Props) {
       setTitleStatus(!titleStatus);
       return;
     }
-    setDataTask(
-      data.toSorted(function (a, b) {
+    setDataMemo(
+      dataMemo.toSorted(function (a, b) {
         const nameA = a.title.toUpperCase();
         const nameB = b.title.toUpperCase();
         if (nameA > nameB) return -1;
@@ -98,32 +119,32 @@ export default function CompletedTasks({ data }: Props) {
 
   const sortByCompleted = (event: React.MouseEvent) => {
     event.preventDefault();
-    if (completedAtStatus) {
-      setDataTask(
-        data.toSorted(function (a, b) {
-          if (a.completedAt.getTime() < b.completedAt.getTime()) return -1;
-          if (a.completedAt.getTime() > b.completedAt.getTime()) return 1;
+    if (editedAtStatus) {
+      setDataMemo(
+        dataMemo.toSorted(function (a, b) {
+          if (a.editedAt.getTime() < b.editedAt.getTime()) return -1;
+          if (a.editedAt.getTime() > b.editedAt.getTime()) return 1;
           return 0;
         })
       );
-      setCompletedAtStatus(!completedAtStatus);
+      setEditedAtStatus(!editedAtStatus);
       return;
     }
-    setDataTask(
-      data.toSorted(function (a, b) {
-        if (a.completedAt.getTime() > b.completedAt.getTime()) return -1;
-        if (a.completedAt.getTime() < b.completedAt.getTime()) return 1;
+    setDataMemo(
+      dataMemo.toSorted(function (a, b) {
+        if (a.editedAt.getTime() > b.editedAt.getTime()) return -1;
+        if (a.editedAt.getTime() < b.editedAt.getTime()) return 1;
         return 0;
       })
     );
-    setCompletedAtStatus(!completedAtStatus);
+    setEditedAtStatus(!editedAtStatus);
   };
 
   const sortByCreated = (event: React.MouseEvent) => {
     event.preventDefault();
     if (createdAtStatus) {
-      setDataTask(
-        data.toSorted(function (a, b) {
+      setDataMemo(
+        dataMemo.toSorted(function (a, b) {
           if (a.createdAt.getTime() < b.createdAt.getTime()) return -1;
           if (a.createdAt.getTime() > b.createdAt.getTime()) return 1;
           return 0;
@@ -132,8 +153,8 @@ export default function CompletedTasks({ data }: Props) {
       setCreatedAtStatus(!createdAtStatus);
       return;
     }
-    setDataTask(
-      data.toSorted(function (a, b) {
+    setDataMemo(
+      dataMemo.toSorted(function (a, b) {
         if (a.createdAt.getTime() > b.createdAt.getTime()) return -1;
         if (a.createdAt.getTime() < b.createdAt.getTime()) return 1;
         return 0;
@@ -141,9 +162,15 @@ export default function CompletedTasks({ data }: Props) {
     );
     setCreatedAtStatus(!createdAtStatus);
   };
-  //***End***//
 
-  function hideBtn() {
+  //Clear
+  const clearSearch = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setDataMemo(data);
+  };
+  //***End********************************************************************//
+
+  function hideSearch() {
     setIsHiddenSearch({
       lable: isHiddenSearch.lable == "Hide" ? "Show" : "Hide",
       value: !isHiddenSearch.value,
@@ -158,15 +185,12 @@ export default function CompletedTasks({ data }: Props) {
   }
 
   return (
-    <div
-      className="w-full min-h-screen bg-stone-500 flex flex-col
-      justify-start"
-    >
-      <NavBarAlt />
+    <>
       <div className="flex flex-col sm:grid sm:grid-cols-3 sm:gap-4 sm:mx-auto">
+        {/* Main search */}
         <section
-          className="bg-stone-400 py-2 px-5 border-2 my-2 mx-auto mt-4
-        sm:w-full"
+          className="flex flex-col justify-center items-start gap-2 
+          bg-stone-400 py-2 px-5 border-2 my-2 mx-auto mt-4 sm:w-full"
         >
           <header className="font-bold text-xl sm:text-2xl">Search: </header>
           <form className="flex justify-start items-center gap-2 sm:gap-4">
@@ -181,9 +205,16 @@ export default function CompletedTasks({ data }: Props) {
               onClick={searchByTitle}
             />
             <BtnSubmit label="Text" tailwind="text-xl" onClick={searchByText} />
+            <BtnSubmit label="Tags" tailwind="text-xl" onClick={searchByTags} />
           </form>
+          <BtnSubmit
+            label="Clear Search"
+            tailwind="text-xl"
+            onClick={clearSearch}
+          />
         </section>
 
+        {/* Main search by time Period*/}
         <section
           className="bg-stone-400 py-2 px-5 border-2 mx-auto my-2 sm:mt-4 flex 
           flex-col justify-center sm:w-full"
@@ -192,7 +223,7 @@ export default function CompletedTasks({ data }: Props) {
             <header className="text-xl sm:text-2xl font-bold mr-2 sm:mr-4 ">
               Search by time:{" "}
             </header>
-            <BtnStandard label={isHiddenSearch.lable} onClick={hideBtn} />
+            <BtnStandard label={isHiddenSearch.lable} onClick={hideSearch} />
           </div>
           {isHiddenSearch.value && (
             <p className="my-1">
@@ -241,6 +272,7 @@ export default function CompletedTasks({ data }: Props) {
           )}
         </section>
 
+        {/* Sort */}
         <section
           className="flex flex-col gap-2 justify-center items-center py-2 px-5 border-2
         mx-auto my-2 bg-stone-400 sm:mt-4 sm:w-full"
@@ -258,31 +290,33 @@ export default function CompletedTasks({ data }: Props) {
                 onClick={sortByTitle}
               />
               <BtnSubmit
-                label="Date Completed"
-                tailwind="text-xl"
-                onClick={sortByCompleted}
-              />
-              <BtnSubmit
                 label="Date Created"
                 tailwind="text-xl"
                 onClick={sortByCreated}
+              />
+              <BtnSubmit
+                label="Date Edited"
+                tailwind="text-xl"
+                onClick={sortByCompleted}
               />
             </div>
           )}
         </section>
       </div>
+
+      {/* Display data */}
       <section className="mt-4 mx-4">
         <ul
-          className="flex flex-col gap-2 
-          sm:grid sm:grid-cols-4 sm:gap-5 sm:px-5"
+          className="flex flex-col gap-2 items-center justify-start
+          sm:grid sm:grid-cols-3 sm:gap-2 sm:mx-4"
         >
-          {dataTask.map((data) => (
+          {dataMemo.map((data) => (
             <li key={data.id}>
-              <TaskCompleted data={data} />
+              <Memo data={data} />
             </li>
           ))}
         </ul>
       </section>
-    </div>
+    </>
   );
 }

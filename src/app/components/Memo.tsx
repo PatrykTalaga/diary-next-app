@@ -71,10 +71,19 @@ export default function Memo({ data }: Props) {
         <StandardLink
           link={`/previousVersions/${data.id}`}
           label="Previous Versions"
+          tailwind="sm:text-sm"
         />
-        <BtnStandard onClick={printMemo} label="Print" />
-        <BtnStandard onClick={() => setShowModal(true)} label="Edit" />
-        <BtnStandard onClick={handleDelete} label="Delete" />
+        <BtnStandard onClick={printMemo} label="Print" tailwind="sm:text-sm" />
+        <BtnStandard
+          onClick={() => setShowModal(true)}
+          label="Edit"
+          tailwind="sm:text-sm"
+        />
+        <BtnStandard
+          onClick={handleDelete}
+          label="Delete"
+          tailwind="sm:text-sm"
+        />
       </section>
     </div>
   );

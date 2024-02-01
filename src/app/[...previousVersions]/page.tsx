@@ -22,10 +22,10 @@ export default async function PreviousVersions({
 }) {
   let dataMemo: DataMemoType = [];
   try {
-    //get previous versions by commonId field
+    //get previous versions by commonId
     const result = await getPreviousVersionsMemo(params.previousVersions[1]);
     if (result !== false) dataMemo = result;
-    //add current verions at start
+    //add current verion at start
     const currentMemo = await getMemoById(params.previousVersions[1]);
     if (currentMemo !== false) dataMemo = [currentMemo, ...dataMemo];
   } catch (err) {

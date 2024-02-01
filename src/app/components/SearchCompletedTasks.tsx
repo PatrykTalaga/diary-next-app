@@ -3,27 +3,28 @@
 import { useState } from "react";
 import NavBarAlt from "./NavBarAlt";
 import BtnStandard from "./BtnStandard";
+import TaskCompleted from "./TaskCompleted";
 import BtnSubmit from "./BtnSubmit";
-import Memo from "./Memo";
 
 type Props = {
   data: Array<{
     id: string;
     title: string;
     text: string;
-    img: string;
-    tags: Array<string>;
     createdAt: Date;
-    edited: boolean;
-    editedAt: Date;
+    completed: boolean;
+    completedAt: Date;
   }>;
 };
 
-export default function AdvancedSearchPage({ data }: Props) {
+export default function SearchCompletedTasks({ data }: Props) {
+  //main search input
   const [searchParams, setSearchParams] = useState("");
+  //variables for sorting by
   const [titleStatus, setTitleStatus] = useState(true);
   const [createdAtStatus, setCreatedAtStatus] = useState(true);
-  const [editedAtStatus, setEditedAtStatus] = useState(true);
+  const [completedAtStatus, setCompletedAtStatus] = useState(true);
+  //hide components
   const [isHiddenSearch, setIsHiddenSearch] = useState({
     lable: "Show",
     value: false,
@@ -32,13 +33,15 @@ export default function AdvancedSearchPage({ data }: Props) {
     lable: "Show",
     value: false,
   });
+  //search by time period input
   const [timePeriod, settimePeriod] = useState({
     year: 0,
     month: 0,
   });
+  //data to display
   const [dataTask, setDataTask] = useState(data);
 
-  //***Sort And Search Functions***//
+  //***Sort And Search Functions**********************************************//
   //Search
   const searchByTitle = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -50,21 +53,6 @@ export default function AdvancedSearchPage({ data }: Props) {
     event.preventDefault();
     const regEx = new RegExp(searchParams, "i");
     setDataTask(data.filter((data) => data.text.match(regEx)));
-  };
-
-  const searchByTags = (event: React.MouseEvent) => {
-    event.preventDefault();
-    const regEx = new RegExp(searchParams, "i");
-
-    setDataTask(
-      data.filter((data) => {
-        const newArr = data.tags.filter((tag) => tag.match(regEx));
-        if (newArr.length !== 0) {
-          return data;
-        }
-      })
-    );
-    console.log(dataTask);
   };
 
   const searchByTimePeriod = (event: React.MouseEvent) => {
@@ -90,7 +78,7 @@ export default function AdvancedSearchPage({ data }: Props) {
     event.preventDefault();
     if (titleStatus) {
       setDataTask(
-        data.toSorted(function (a, b) {
+        dataTask.toSorted(function (a, b) {
           const nameA = a.title.toUpperCase();
           const nameB = b.title.toUpperCase();
           if (nameA < nameB) return -1;
@@ -102,7 +90,7 @@ export default function AdvancedSearchPage({ data }: Props) {
       return;
     }
     setDataTask(
-      data.toSorted(function (a, b) {
+      dataTask.toSorted(function (a, b) {
         const nameA = a.title.toUpperCase();
         const nameB = b.title.toUpperCase();
         if (nameA > nameB) return -1;
@@ -115,32 +103,32 @@ export default function AdvancedSearchPage({ data }: Props) {
 
   const sortByCompleted = (event: React.MouseEvent) => {
     event.preventDefault();
-    if (editedAtStatus) {
+    if (completedAtStatus) {
       setDataTask(
-        data.toSorted(function (a, b) {
-          if (a.editedAt.getTime() < b.editedAt.getTime()) return -1;
-          if (a.editedAt.getTime() > b.editedAt.getTime()) return 1;
+        dataTask.toSorted(function (a, b) {
+          if (a.completedAt.getTime() < b.completedAt.getTime()) return -1;
+          if (a.completedAt.getTime() > b.completedAt.getTime()) return 1;
           return 0;
         })
       );
-      setEditedAtStatus(!editedAtStatus);
+      setCompletedAtStatus(!completedAtStatus);
       return;
     }
     setDataTask(
-      data.toSorted(function (a, b) {
-        if (a.editedAt.getTime() > b.editedAt.getTime()) return -1;
-        if (a.editedAt.getTime() < b.editedAt.getTime()) return 1;
+      dataTask.toSorted(function (a, b) {
+        if (a.completedAt.getTime() > b.completedAt.getTime()) return -1;
+        if (a.completedAt.getTime() < b.completedAt.getTime()) return 1;
         return 0;
       })
     );
-    setEditedAtStatus(!editedAtStatus);
+    setCompletedAtStatus(!completedAtStatus);
   };
 
   const sortByCreated = (event: React.MouseEvent) => {
     event.preventDefault();
     if (createdAtStatus) {
       setDataTask(
-        data.toSorted(function (a, b) {
+        dataTask.toSorted(function (a, b) {
           if (a.createdAt.getTime() < b.createdAt.getTime()) return -1;
           if (a.createdAt.getTime() > b.createdAt.getTime()) return 1;
           return 0;
@@ -150,7 +138,7 @@ export default function AdvancedSearchPage({ data }: Props) {
       return;
     }
     setDataTask(
-      data.toSorted(function (a, b) {
+      dataTask.toSorted(function (a, b) {
         if (a.createdAt.getTime() > b.createdAt.getTime()) return -1;
         if (a.createdAt.getTime() < b.createdAt.getTime()) return 1;
         return 0;
@@ -158,14 +146,21 @@ export default function AdvancedSearchPage({ data }: Props) {
     );
     setCreatedAtStatus(!createdAtStatus);
   };
-  //***End***//
 
-  function hideBtn() {
+  //Clear
+  const clearSearch = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setDataTask(data);
+  };
+  //***End********************************************************************//
+
+  function hideSearch() {
     setIsHiddenSearch({
       lable: isHiddenSearch.lable == "Hide" ? "Show" : "Hide",
       value: !isHiddenSearch.value,
     });
   }
+
   function hideSort() {
     setIsHiddenSort({
       lable: isHiddenSort.lable == "Hide" ? "Show" : "Hide",
@@ -175,15 +170,12 @@ export default function AdvancedSearchPage({ data }: Props) {
   }
 
   return (
-    <div
-      className="w-full min-h-screen bg-stone-500 flex flex-col
-      justify-start"
-    >
-      <NavBarAlt />
+    <>
       <div className="flex flex-col sm:grid sm:grid-cols-3 sm:gap-4 sm:mx-auto">
+        {/* Main search */}
         <section
-          className="bg-stone-400 py-2 px-5 border-2 my-2 mx-auto mt-4
-        sm:w-full"
+          className="flex flex-col justify-center items-start gap-2 
+          bg-stone-400 py-2 px-5 border-2 my-2 mx-auto mt-4 sm:w-full"
         >
           <header className="font-bold text-xl sm:text-2xl">Search: </header>
           <form className="flex justify-start items-center gap-2 sm:gap-4">
@@ -198,10 +190,15 @@ export default function AdvancedSearchPage({ data }: Props) {
               onClick={searchByTitle}
             />
             <BtnSubmit label="Text" tailwind="text-xl" onClick={searchByText} />
-            <BtnSubmit label="Tags" tailwind="text-xl" onClick={searchByTags} />
           </form>
+          <BtnSubmit
+            label="Clear Search"
+            tailwind="text-xl"
+            onClick={clearSearch}
+          />
         </section>
 
+        {/* Main search by time Period*/}
         <section
           className="bg-stone-400 py-2 px-5 border-2 mx-auto my-2 sm:mt-4 flex 
           flex-col justify-center sm:w-full"
@@ -210,7 +207,7 @@ export default function AdvancedSearchPage({ data }: Props) {
             <header className="text-xl sm:text-2xl font-bold mr-2 sm:mr-4 ">
               Search by time:{" "}
             </header>
-            <BtnStandard label={isHiddenSearch.lable} onClick={hideBtn} />
+            <BtnStandard label={isHiddenSearch.lable} onClick={hideSearch} />
           </div>
           {isHiddenSearch.value && (
             <p className="my-1">
@@ -259,6 +256,7 @@ export default function AdvancedSearchPage({ data }: Props) {
           )}
         </section>
 
+        {/* Sort */}
         <section
           className="flex flex-col gap-2 justify-center items-center py-2 px-5 border-2
         mx-auto my-2 bg-stone-400 sm:mt-4 sm:w-full"
@@ -276,19 +274,21 @@ export default function AdvancedSearchPage({ data }: Props) {
                 onClick={sortByTitle}
               />
               <BtnSubmit
+                label="Date Completed"
+                tailwind="text-xl"
+                onClick={sortByCompleted}
+              />
+              <BtnSubmit
                 label="Date Created"
                 tailwind="text-xl"
                 onClick={sortByCreated}
-              />
-              <BtnSubmit
-                label="Date Edited"
-                tailwind="text-xl"
-                onClick={sortByCompleted}
               />
             </div>
           )}
         </section>
       </div>
+
+      {/* Display data */}
       <section className="mt-4 mx-4">
         <ul
           className="flex flex-col gap-2 
@@ -296,11 +296,11 @@ export default function AdvancedSearchPage({ data }: Props) {
         >
           {dataTask.map((data) => (
             <li key={data.id}>
-              <Memo data={data} />
+              <TaskCompleted data={data} />
             </li>
           ))}
         </ul>
       </section>
-    </div>
+    </>
   );
 }
