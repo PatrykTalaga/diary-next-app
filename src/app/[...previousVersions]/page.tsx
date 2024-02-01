@@ -1,6 +1,8 @@
-import EditedMemoModel from "../../../models/editedMemoModel";
-import connectMongo from "../../../utils/connectMongo";
-import PreviousVersionsPage from "../components/PreviousVersionsPage";
+"use server";
+
+import MemoViewOnly from "../components/MemoViewOnly";
+import NavBarAlt from "../components/NavBarAlt";
+import { getMemoById, getPreviousVersionsMemo } from "../functions/memos";
 
 type DataMemoType = Array<{
   id: string;
@@ -20,34 +22,37 @@ export default async function PreviousVersions({
 }) {
   let dataMemo: DataMemoType = [];
   try {
-    await connectMongo();
-    let memos = await EditedMemoModel.find({
-      commonId: params.previousVersions[1],
-    });
-
-    memos.sort(function (a, b) {
-      return b.createdAt.getTime() - a.createdAt.getTime();
-    });
-
-    dataMemo = memos.map((memo) => {
-      return {
-        id: memo._id.toString(),
-        title: memo.title,
-        text: memo.text,
-        img: memo.img,
-        tags: memo.tags,
-        createdAt: memo.createdAt,
-        edited: memo.edited,
-        editedAt: memo.editedAt,
-      };
-    });
+    //get previous versions by commonId field
+    const result = await getPreviousVersionsMemo(params.previousVersions[1]);
+    if (result !== false) dataMemo = result;
+    //add current verions at start
+    const currentMemo = await getMemoById(params.previousVersions[1]);
+    if (currentMemo !== false) dataMemo = [currentMemo, ...dataMemo];
   } catch (err) {
     console.error(err);
   }
 
   return (
     <>
-      <PreviousVersionsPage data={dataMemo}></PreviousVersionsPage>
+      <div
+        className="w-full min-h-screen bg-stone-500 flex flex-col
+      justify-start"
+      >
+        <NavBarAlt />
+
+        <section className="mt-4 mx-4">
+          <ul
+            className="flex flex-col gap-2 items-center justify-start
+            sm:grid sm:grid-cols-3 sm:gap-4 sm:mx-2"
+          >
+            {dataMemo.map((data) => (
+              <li key={data.id}>
+                <MemoViewOnly data={data} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </>
   );
 }

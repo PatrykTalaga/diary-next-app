@@ -5,6 +5,7 @@ import BtnStandard from "./BtnStandard";
 import { useRouter } from "next/navigation";
 import { deleteMemo } from "../functions/memos";
 import ModalEditMemo from "./ModalEditMemo";
+import StandardLink from "./StandardLink";
 
 type Props = {
   data: {
@@ -67,7 +68,10 @@ export default function Memo({ data }: Props) {
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">
-        {/*  add previous versions button/link here */}
+        <StandardLink
+          link={`/previousVersions/${data.id}`}
+          label="Previous Versions"
+        />
         <BtnStandard onClick={printMemo} label="Print" />
         <BtnStandard onClick={() => setShowModal(true)} label="Edit" />
         <BtnStandard onClick={handleDelete} label="Delete" />

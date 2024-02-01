@@ -24,7 +24,7 @@ export default function MemoViewOnly({ data }: Props) {
   return (
     <div
       className="flex flex-col justify-center items-start px-5 mx-5 py-2
-    border rounded-lg bg-stone-400 bg-opacity-70 h-full"
+      border rounded-lg bg-stone-400 bg-opacity-70 h-full"
     >
       <section className=" flex justify-start items-end">
         <header className="text-xl text-neutral-100">
@@ -41,7 +41,9 @@ export default function MemoViewOnly({ data }: Props) {
         {data.img !== "" && (
           <img
             alt="memo image"
-            src={`images/${data.img}`}
+            /* src={`/images/7437643e-3e23-4836-83ed-be2dac604874.jpg`} */
+            src={`/images/${data.img}`}
+            /* src={`images/${data.img}`} */
             className="max-h-56 max-w-80 float-left m-2"
           ></img>
         )}

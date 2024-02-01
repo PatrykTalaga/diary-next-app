@@ -7,6 +7,19 @@ import connectMongo from "../../../utils/connectMongo";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
+type MemoType = {
+  id: string;
+  title: string;
+  text: string;
+  img: string;
+  tags: Array<string>;
+  createdAt: Date;
+  edited: boolean;
+  editedAt: Date;
+};
+
+type DataMemoType = Array<MemoType>;
+
 //Get data from database//
 
 export default async function fetchMemos(limit: number) {
@@ -14,7 +27,7 @@ export default async function fetchMemos(limit: number) {
     await connectMongo();
     let memos = await Memo.find().limit(limit);
     //remove object id (_id), add id string
-    const memosIdString = memos.map((memo) => {
+    const memosIdString: DataMemoType = memos.map((memo) => {
       return {
         id: memo._id.toString(),
         title: memo.title,
@@ -41,10 +54,22 @@ export async function fetchAllMemos() {
   try {
     await connectMongo();
     let memos = await Memo.find();
-    memos.sort(function (a, b) {
+    const memosIdString: DataMemoType = memos.map((memo) => {
+      return {
+        id: memo._id.toString(),
+        title: memo.title,
+        text: memo.text,
+        img: memo.img,
+        tags: memo.tags,
+        createdAt: memo.createdAt,
+        edited: memo.edited,
+        editedAt: memo.editedAt,
+      };
+    });
+    memosIdString.sort(function (a, b) {
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
-    return memos;
+    return memosIdString;
   } catch (err) {
     console.error(err);
     return false;
@@ -56,9 +81,49 @@ export async function getMemoById(memoId: string) {
     await connectMongo();
     let memo = await Memo.findOne({ _id: memoId });
     if (memo === null) return false;
-    return memo;
+    const memoIdString: MemoType = {
+      id: memo._id.toString(),
+      title: memo.title,
+      text: memo.text,
+      img: memo.img,
+      tags: memo.tags,
+      createdAt: memo.createdAt,
+      edited: memo.edited,
+      editedAt: memo.editedAt,
+    };
+    return memoIdString;
   } catch (error) {
     console.error(error);
+    return false;
+  }
+}
+
+export async function getPreviousVersionsMemo(id: string) {
+  try {
+    await connectMongo();
+    let memos = await EditedMemoModel.find({
+      commonId: id,
+    });
+
+    memos.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+
+    const memosIdString: DataMemoType = memos.map((memo) => {
+      return {
+        id: memo._id.toString(),
+        title: memo.title,
+        text: memo.text,
+        img: memo.img,
+        tags: memo.tags,
+        createdAt: memo.createdAt,
+        edited: memo.edited,
+        editedAt: memo.editedAt,
+      };
+    });
+    return memosIdString;
+  } catch (err) {
+    console.error(err);
     return false;
   }
 }

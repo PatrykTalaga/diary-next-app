@@ -43,7 +43,7 @@ export default function MemoSection({ dataMemo }: Props) {
 
       <ul
         className="flex flex-col gap-2 items-center justify-start
-        sm:grid sm:grid-cols-3 sm:gap-2 sm:mx-2 "
+        sm:grid sm:grid-cols-3 sm:gap-2 sm:mx-4 "
       >
         {dataMemo.slice(0, memosDisp).map((data) => (
           <li key={data.id}>

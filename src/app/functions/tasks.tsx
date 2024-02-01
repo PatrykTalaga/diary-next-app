@@ -6,12 +6,23 @@ import connectMongo from "../../../utils/connectMongo";
 
 //get data from database//
 
+type TaskType = {
+  id: string;
+  title: string;
+  text: string;
+  createdAt: Date;
+  completed: boolean;
+  completedAt: Date;
+};
+
+type DataTaskType = Array<TaskType>;
+
 export default async function fetchTasks(limit: number) {
   try {
     await connectMongo();
     let tasks = await Task.find().limit(limit);
     //remove object id (_id), add id string
-    const dataTask = tasks.map((task) => {
+    const dataTask: DataTaskType = tasks.map((task) => {
       return {
         id: task._id.toString(),
         title: task.title,
@@ -36,10 +47,20 @@ export async function fetchCompletedTasks() {
   try {
     await connectMongo();
     let tasks = await CompletedTask.find();
-    tasks.sort(function (a, b) {
+    const dataTask: DataTaskType = tasks.map((task) => {
+      return {
+        id: task._id.toString(),
+        title: task.title,
+        text: task.text,
+        createdAt: task.createdAt,
+        completed: task.completed,
+        completedAt: task.completedAt,
+      };
+    });
+    dataTask.sort(function (a, b) {
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
-    return tasks;
+    return dataTask;
   } catch (err) {
     console.error(err);
     return false;

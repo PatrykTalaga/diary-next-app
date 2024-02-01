@@ -1,5 +1,5 @@
 import CompletedTasks from "../components/CompletedTasks";
-import fetchCompletedTasks from "../functions/fetchCompletedTasks";
+import { fetchCompletedTasks } from "../functions/tasks";
 
 type DataTaskType = Array<{
   id: string;
