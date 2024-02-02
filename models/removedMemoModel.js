@@ -1,6 +1,7 @@
 import { Schema, model, models } from "mongoose";
 
 const removedMemoSchema = new Schema({
+  oldId: String,
   title: {
     type: String,
     required: true,
@@ -9,6 +10,8 @@ const removedMemoSchema = new Schema({
     type: String,
     required: true,
   },
+  img: String,
+  tags: Array,
   edited: Boolean,
   createdAt: Date,
   editedAt: Date,

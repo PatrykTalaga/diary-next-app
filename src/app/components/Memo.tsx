@@ -56,7 +56,7 @@ export default function Memo({ data }: Props) {
         {data.img !== "" && (
           <img
             alt="memo image"
-            src={`images/${data.img}`}
+            src={`/images/${data.img}`}
             className="max-h-56 max-w-80 float-left m-2"
           ></img>
         )}

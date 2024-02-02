@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+
 import convertDate from "../functions/convertDate";
 import BtnStandard from "./BtnStandard";
-import EditMemoModal from "./ModalEditMemo";
+import StandardLink from "./StandardLink";
 
 type Props = {
   data: {
+    id: string;
+    oldId: string;
     title: string;
     text: string;
     img: string;
@@ -13,14 +15,11 @@ type Props = {
     createdAt: Date;
     edited: boolean;
     editedAt: Date;
+    deletedAt: Date;
   };
 };
 
-export default function DeletedMemo({ data }: Props) {
-  const [showModal, setShowModal] = useState(false);
-  function viewPreviousVersions() {
-    console.log("viewPreviousVersions");
-  }
+export default function MemoDeleted({ data }: Props) {
   function printMemo() {
     console.log("print");
   }
@@ -28,12 +27,8 @@ export default function DeletedMemo({ data }: Props) {
   return (
     <div
       className="flex flex-col justify-center items-start px-5 mx-5 py-2
-    border rounded-lg bg-stone-400 bg-opacity-70"
+      border rounded-lg bg-stone-400 bg-opacity-70 h-full"
     >
-      <EditMemoModal
-        showModal={showModal}
-        closeForm={() => setShowModal(false)}
-      />
       <section className=" flex justify-start items-end">
         <header className="text-xl text-neutral-100">
           {data.title + ", "}
@@ -44,12 +39,15 @@ export default function DeletedMemo({ data }: Props) {
             : convertDate(data.createdAt)}
         </p>
       </section>
+      <p className=" text-lg text-neutral-100 ml-2">
+        Deleted: {`${convertDate(data.deletedAt)}`}
+      </p>
 
-      <section>
+      <section className="container">
         {data.img !== "" && (
           <img
             alt="memo image"
-            src={`images/${data.img}`}
+            src={`/images/${data.img}`}
             className="max-h-56 max-w-80 float-left m-2"
           ></img>
         )}
@@ -61,12 +59,11 @@ export default function DeletedMemo({ data }: Props) {
       </section>
 
       <section className="flex justify-center gap-2 w-full py-1">
-        {data.edited ? (
-          <BtnStandard
-            onClick={viewPreviousVersions}
-            label="View previous versions"
-          />
-        ) : null}
+        <StandardLink
+          link={`/previousVersions/${data.oldId}`}
+          label="Previous Versions"
+          tailwind="sm:text-sm"
+        />
         <BtnStandard onClick={printMemo} label="Print" />
       </section>
     </div>

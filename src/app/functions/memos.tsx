@@ -1,5 +1,6 @@
 "use server";
 
+import { deleteModel } from "mongoose";
 import EditedMemoModel from "../../../models/editedMemoModel";
 import Memo from "../../../models/memoModel";
 import RemovedMemo from "../../../models/removedMemoModel";
@@ -19,6 +20,19 @@ type MemoType = {
 };
 
 type DataMemoType = Array<MemoType>;
+
+type DataDeletedMemoType = Array<{
+  id: string;
+  oldId: string;
+  title: string;
+  text: string;
+  img: string;
+  tags: Array<string>;
+  createdAt: Date;
+  edited: boolean;
+  editedAt: Date;
+  deletedAt: Date;
+}>;
 
 //Get data from database//
 
@@ -98,6 +112,35 @@ export async function getMemoById(memoId: string) {
   }
 }
 
+export async function searchMemo(searchParams: string) {
+  try {
+    await connectMongo();
+    const regEx = new RegExp(searchParams, "i");
+    let memos = await Memo.find({ title: regEx });
+    if (memos.length === 0) return false;
+    const memosIdString: DataMemoType = memos.map((memo) => {
+      return {
+        id: memo._id.toString(),
+        title: memo.title,
+        text: memo.text,
+        img: memo.img,
+        tags: memo.tags,
+        createdAt: memo.createdAt,
+        edited: memo.edited,
+        editedAt: memo.editedAt,
+      };
+    });
+    //sort by creaction date
+    memosIdString.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+    return memosIdString;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 export async function getPreviousVersionsMemo(id: string) {
   try {
     await connectMongo();
@@ -120,6 +163,34 @@ export async function getPreviousVersionsMemo(id: string) {
         edited: memo.edited,
         editedAt: memo.editedAt,
       };
+    });
+    return memosIdString;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+export async function fetchDeletedMemos() {
+  try {
+    await connectMongo();
+    let memos = await RemovedMemo.find();
+    const memosIdString: DataDeletedMemoType = memos.map((memo) => {
+      return {
+        id: memo._id.toString(),
+        oldId: memo.oldId,
+        title: memo.title,
+        text: memo.text,
+        img: memo.img,
+        tags: memo.tags,
+        createdAt: memo.createdAt,
+        edited: memo.edited,
+        editedAt: memo.editedAt,
+        deletedAt: memo.editedAt,
+      };
+    });
+    memosIdString.sort(function (a, b) {
+      return b.createdAt.getTime() - a.createdAt.getTime();
     });
     return memosIdString;
   } catch (err) {
@@ -169,6 +240,7 @@ export async function deleteMemo(id: string) {
     if (memo === null) return;
 
     const newMemo = {
+      oldId: memo._id.toString(),
       title: memo.title,
       text: memo.text,
       img: memo.img,

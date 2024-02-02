@@ -41,9 +41,7 @@ export default function MemoViewOnly({ data }: Props) {
         {data.img !== "" && (
           <img
             alt="memo image"
-            /* src={`/images/7437643e-3e23-4836-83ed-be2dac604874.jpg`} */
             src={`/images/${data.img}`}
-            /* src={`images/${data.img}`} */
             className="max-h-56 max-w-80 float-left m-2"
           ></img>
         )}

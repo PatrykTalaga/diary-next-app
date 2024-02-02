@@ -3,7 +3,8 @@
 import { useState } from "react";
 import BtnStandard from "./BtnStandard";
 import BtnSubmit from "./BtnSubmit";
-import MemoList from "./MemoList";
+import MemoListViewOnly from "./MemoListViewOnly";
+import MemoListDeleted from "./MemoListDeleted";
 
 type Props = {
   data: Array<{
@@ -15,10 +16,11 @@ type Props = {
     createdAt: Date;
     edited: boolean;
     editedAt: Date;
+    deletedAt: Date;
   }>;
 };
 
-export default function SearchMemos({ data }: Props) {
+export default function SearchMemosDeleted({ data }: Props) {
   //main search input
   const [searchParams, setSearchParams] = useState("");
   //variables for sorting by
@@ -68,6 +70,7 @@ export default function SearchMemos({ data }: Props) {
         }
       })
     );
+    console.log(dataMemo);
   };
 
   const searchByTimePeriod = (event: React.MouseEvent) => {
@@ -180,6 +183,7 @@ export default function SearchMemos({ data }: Props) {
       lable: isHiddenSort.lable == "Hide" ? "Show" : "Hide",
       value: !isHiddenSort.value,
     });
+    console.log(isHiddenSort);
   }
 
   return (
@@ -303,7 +307,7 @@ export default function SearchMemos({ data }: Props) {
       </div>
 
       {/* Display data */}
-      <MemoList dataMemo={dataMemo} />
+      <MemoListDeleted dataMemo={dataMemo} />
     </>
   );
 }

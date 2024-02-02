@@ -1,8 +1,8 @@
 "use server";
 
-import MemoViewOnly from "../components/MemoViewOnly";
-import NavBarAlt from "../components/NavBarAlt";
-import { getMemoById, getPreviousVersionsMemo } from "../functions/memos";
+import MemoViewOnly from "../../components/MemoViewOnly";
+import NavBarAlt from "../../components/NavBarAlt";
+import { getMemoById, getPreviousVersionsMemo } from "../../functions/memos";
 
 type DataMemoType = Array<{
   id: string;
@@ -15,18 +15,16 @@ type DataMemoType = Array<{
   editedAt: Date;
 }>;
 
-export default async function PreviousVersions({
-  params,
-}: {
-  params: { previousVersions: Array<string> };
-}) {
+type Params = { params: { commonId: string } };
+
+export default async function commonId({ params }: Params) {
   let dataMemo: DataMemoType = [];
   try {
     //get previous versions by commonId
-    const result = await getPreviousVersionsMemo(params.previousVersions[1]);
+    const result = await getPreviousVersionsMemo(params.commonId);
     if (result !== false) dataMemo = result;
     //add current verion at start
-    const currentMemo = await getMemoById(params.previousVersions[1]);
+    const currentMemo = await getMemoById(params.commonId);
     if (currentMemo !== false) dataMemo = [currentMemo, ...dataMemo];
   } catch (err) {
     console.error(err);

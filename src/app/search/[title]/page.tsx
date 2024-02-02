@@ -1,13 +1,13 @@
 "use server";
 
-import NavBarAlt from "../components/NavBarAlt";
+import MemoList from "@/app/components/MemoList";
+import NavBarAlt from "@/app/components/NavBarAlt";
+import { searchMemo } from "@/app/functions/memos";
 
-import SearchMemosDeleted from "../components/SearchMemosDeleted";
-import { fetchDeletedMemos } from "../functions/memos";
+type Params = { params: { title: string } };
 
 type DataMemoType = Array<{
   id: string;
-  oldId: string;
   title: string;
   text: string;
   img: string;
@@ -15,13 +15,11 @@ type DataMemoType = Array<{
   createdAt: Date;
   edited: boolean;
   editedAt: Date;
-  deletedAt: Date;
 }>;
-
-export default async function DeletedMemos() {
+export default async function SearchPage({ params }: Params) {
   let dataMemo: DataMemoType = [];
   try {
-    const memos = await fetchDeletedMemos();
+    const memos = await searchMemo(params.title);
     if (memos !== false) dataMemo = memos;
   } catch (err) {
     console.error(err);
@@ -34,7 +32,7 @@ export default async function DeletedMemos() {
       justify-start"
       >
         <NavBarAlt />
-        <SearchMemosDeleted data={dataMemo} />
+        <MemoList dataMemo={dataMemo} />
       </div>
     </>
   );
